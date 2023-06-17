@@ -3,14 +3,35 @@ const redux = require("redux");
 const createStore = redux.createStore;
 //Actions
 const WINGS_ORDERED = "WINGS_ORDERED";
+const WINGS_RESTOCKED = "WINGS_RESTOCKED";
+const COKE_ORDERED = "COKE_ORDERED";
+const COKE_RESTOCKED = "COKE_RESTOCKED";
 
 //Action defination
 
 //Action Creator, function that returns action
-function orderwings() {
+function orderwings(qnty = 1) {
   return {
     type: WINGS_ORDERED,
-    quantity: 1,
+    payload: qnty,
+  };
+}
+function restockWings(qnty = 1) {
+  return {
+    type: WINGS_RESTOCKED,
+    payload: qnty,
+  };
+}
+function orderCoke(qnty = 1) {
+  return {
+    type: COKE_ORDERED,
+    payload: qnty,
+  };
+}
+function restockCoke(qnty = 1) {
+  return {
+    type: COKE_RESTOCKED,
+    payload: qnty,
   };
 }
 
@@ -28,7 +49,23 @@ const reducer = (state = initialState, action) => {
   switch (action.type) {
     case WINGS_ORDERED:
       return {
-        numberofwings: state.numberofwings - 1,
+        ...state,
+        numberofwings: state.numberofwings - action.payload,
+      };
+    case WINGS_RESTOCKED:
+      return {
+        ...state,
+        numberofwings: state.numberofwings + action.payload,
+      };
+    case COKE_ORDERED:
+      return {
+        ...state,
+        numberofwings: state.numberofwings - action.payload,
+      };
+    case COKE_RESTOCKED:
+      return {
+        ...state,
+        numberofwings: state.numberofwings + action.payload,
       };
     default:
       return state;
@@ -43,8 +80,8 @@ const reducer = (state = initialState, action) => {
  * 2- Allows access to state via a getstate()
  * 3- Allows State to be updated via dispatch(action)
  * 4- Registors listeners via subscribe(listener)
- * 5- Unsubscribe from the store : store handles unregistering 
- * of listeniers via the fuction returned by the 
+ * 5- Unsubscribe from the store : store handles unregistering
+ * of listeniers via the fuction returned by the
  */
 
 /** 1- */
@@ -53,8 +90,8 @@ const store = createStore(reducer);
 console.log("Initial State", store.getState());
 /** 4- */
 store.subscribe(() => console.log("Updates : ", store.getState()));
-/** 3- 
+/** 3-
  * Invoke the action
-*/
-store.dispatch(orderwings())
-
+ */
+store.dispatch(orderwings(8));
+store.dispatch(restockWings(5));
